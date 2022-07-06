@@ -1,5 +1,5 @@
 
-import { cleanEnv, port, str, url } from "envalid";
+import { cleanEnv, port, str } from "envalid";
 
 /**
  * Checks whether required environment variables are present for application
