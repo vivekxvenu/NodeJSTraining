@@ -54,11 +54,7 @@ class App extends EventEmitter {
       request.startTime = Date.now();
       next();
     });
-  }
-
-  /**
-   * Adds error middleware to app
-   */
+  } 
 
   /**
    * Iterates through controllers in services/index and adds their routes/handlers to app
