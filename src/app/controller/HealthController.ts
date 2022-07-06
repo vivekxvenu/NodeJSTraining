@@ -1,5 +1,5 @@
 import { AbstractController } from "../util/rest/controller";
-import { Router, NextFunction, Response } from "express";
+import { NextFunction, Response } from "express";
 import RequestWithUser from "../util/rest/request";
 import APP_CONSTANTS from "../constants";
 
