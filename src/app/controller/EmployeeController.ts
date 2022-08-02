@@ -15,12 +15,12 @@ class EmployeeController extends AbstractController {
   }
   protected initializeRoutes() {
     
-    this.router.get(`${this.path}`,authorize(['admin','superAdmin']), this.employeeResponse);
-    this.router.post(`${this.path}`,validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
+    this.router.get(`${this.path}`,authorize(['sde','admin']), this.employeeResponse);
+    this.router.post(`${this.path}`,authorize(['admin']),validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
         // this.asyncRouteHandler(this.createEmployee)
-    this.router.delete(`${this.path}/:id`,validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteEmployeeById)
-    this.router.put(`${this.path}/:id`,validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(CreateEmployeeDto,APP_CONSTANTS.body), this.updateEmployeeDetails)
-    this.router.get(`${this.path}/:id`,validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
+    this.router.delete(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteEmployeeById)
+    this.router.put(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(CreateEmployeeDto,APP_CONSTANTS.body), this.updateEmployeeDetails)
+    this.router.get(`${this.path}/:id`,authorize(['sde','admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
     this.router.post(
       `${this.path}/login`,
       this.login

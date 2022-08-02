@@ -3,6 +3,10 @@ import { NextFunction, Response } from "express";
 import RequestWithUser from "../util/rest/request";
 import APP_CONSTANTS from "../constants";
 import { DepartmentService } from "../service/DepartmentService";
+import validationMiddleware from "../middleware/validationMiddleware";
+import {CreateDepartmentDto} from "../dto/CreateDepartmentDto";
+import { UuidDto } from "../dto/UuidDto";
+import authorize from "../middleware/authorize";
 
 class DepartmentController extends AbstractController {
   constructor(private departmentService: DepartmentService) {
@@ -10,11 +14,11 @@ class DepartmentController extends AbstractController {
     this.initializeRoutes();
   }
   protected initializeRoutes() {
-    this.router.get(`${this.path}`, this.departmentResponse);
-    this.router.post(`${this.path}`,this.createDepartment);
-    this.router.put(`${this.path}/:id`, this.updateDepartmentDetails)
-    this.router.delete(`${this.path}`, this.softDeleteDepartmentById)
-    this.router.delete(`${this.path}`, this.getDepartmentId)
+    this.router.get(`${this.path}`,authorize(['sde','admin']), this.departmentResponse);
+    this.router.post(`${this.path}`,authorize(['admin']),validationMiddleware(CreateDepartmentDto, APP_CONSTANTS.body),this.createDepartment);
+    this.router.put(`${this.path}/:id`,authorize(['admin']), validationMiddleware(UuidDto, APP_CONSTANTS.params), validationMiddleware(CreateDepartmentDto, APP_CONSTANTS.body),this.updateDepartmentDetails)
+    this.router.delete(`${this.path}/:id`,authorize(['admin']), validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteDepartmentById)
+    this.router.get(`${this.path}/:id`,authorize(['sde','admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getDepartmentId)
   }
   private departmentResponse = async (request: RequestWithUser, response: Response, next: NextFunction) => {
     try {
@@ -39,7 +43,7 @@ class DepartmentController extends AbstractController {
 
   private softDeleteDepartmentById = async (request: RequestWithUser,response: Response,next: NextFunction) => {
     try {
-      const data = await this.departmentService.softDeleteDepartmentById(request.body);
+      const data = await this.departmentService.softDeleteDepartmentById(request.params.id);
       response.send(
         this.fmt.formatResponse(data, Date.now() - request.startTime, "OK")
       );
