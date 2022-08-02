@@ -6,6 +6,7 @@ import { EmployeeService } from "../service/EmployeeService";
 import {CreateEmployeeDto} from "../dto/CreateEmployeeDto";
 import validationMiddleware from "../middleware/validationMiddleware";
 import { UuidDto } from "../dto/UuidDto";
+import authorize from "../middleware/authorize";
 
 class EmployeeController extends AbstractController {
   constructor(private employeeService: EmployeeService) {
@@ -13,12 +14,17 @@ class EmployeeController extends AbstractController {
     this.initializeRoutes();
   }
   protected initializeRoutes() {
-    this.router.get(`${this.path}`, this.employeeResponse);
+    
+    this.router.get(`${this.path}`,authorize(['admin','superAdmin']), this.employeeResponse);
     this.router.post(`${this.path}`,validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
         // this.asyncRouteHandler(this.createEmployee)
     this.router.delete(`${this.path}/:id`,validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteEmployeeById)
     this.router.put(`${this.path}/:id`,validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(CreateEmployeeDto,APP_CONSTANTS.body), this.updateEmployeeDetails)
     this.router.get(`${this.path}/:id`,validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
+    this.router.post(
+      `${this.path}/login`,
+      this.login
+    );
   }
   private employeeResponse = async (request: RequestWithUser, response: Response, next: NextFunction) => {
     try {
@@ -73,6 +79,26 @@ class EmployeeController extends AbstractController {
       next(err);
     }
   }
+
+  private login = async (
+    request: RequestWithUser,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try{
+    const loginData = request.body;
+    const loginDetail = await this.employeeService.employeeLogin(
+      loginData.name,
+      loginData.password
+    );
+    response.send(
+      this.fmt.formatResponse(loginDetail, Date.now() - request.startTime, "OK")
+    );
+    }
+    catch(err){
+      next(err);
+    }
+  };
 
 }
 

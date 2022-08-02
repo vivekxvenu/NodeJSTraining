@@ -39,4 +39,12 @@ export class EmployeeRespository{
         const updateEmployeeDetails = await employeeRepo.update({ id: employeeId, deletedAt: null }, employeeDetails);
         return updateEmployeeDetails;
     }
+
+    public async getEmployeeByName(userName: string) {
+        const employeeRepo = getConnection().getRepository(Employee);
+        const employeeDetail = await employeeRepo.findOne({
+            where: { name: userName },
+        });
+        return employeeDetail;
+    }
     }

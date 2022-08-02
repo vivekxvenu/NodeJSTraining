@@ -6,6 +6,9 @@ import HttpException from "../exception/HttpException";
 import { EmployeeRespository } from "../repository/employeeRepository";
 import { ErrorCodes } from "../util/errorCode";
 import bcrypt from "bcrypt";
+import jsonwebtoken from "jsonwebtoken"
+import UserNotAuthorizedException from "../exception/UserNotAuthorizedException";
+import IncorrectUsernameOrPasswordException from "../exception/IncorrectUsernameOrPasswordException";
 
 export class EmployeeService {
     constructor(private employeeRepo: EmployeeRespository) { }
@@ -54,10 +57,44 @@ export class EmployeeService {
             const save = await this.employeeRepo.saveEmployeeDetails(newEmployee);
             return save;
         } catch (err) {
-            //throw new HttpException(400, "Failed to create employee");
+            throw new HttpException(400, "Failed to create employee", "");
             throw err;
         }
     }
+
+    public employeeLogin = async (
+        name: string,
+        password: string
+      ) => {
+        const employeeDetails = await this.employeeRepo.getEmployeeByName(
+          name
+        );
+        if (!employeeDetails) {
+          throw new UserNotAuthorizedException();
+        }
+        const validPassword = await bcrypt.compare(password, employeeDetails.password);
+        if (validPassword) {
+          let payload = {
+            "custom:id": employeeDetails.id,
+            "custom:name": employeeDetails.name,
+            "role":employeeDetails.role
+          };
+          const token = this.generateAuthTokens(payload);
+
+          return {
+            idToken: token,
+            employeeDetails,
+          };
+        } else {
+          throw new IncorrectUsernameOrPasswordException();
+        }
+      };
+
+     private generateAuthTokens = (payload: any) => {
+        return jsonwebtoken.sign(payload, process.env.JWT_TOKEN_SECRET, {
+          expiresIn: process.env.ID_TOKEN_VALIDITY,
+        });
+      };  
 }
 
 
