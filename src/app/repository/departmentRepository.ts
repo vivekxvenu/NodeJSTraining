@@ -8,7 +8,24 @@ export class DepartmentRespository{
     }
 
     public async saveDepartmentDetails(departmentDetails: Department) {
-        const employeeRepo = getConnection().getRepository(Department);
-        return employeeRepo.save(departmentDetails);
+        const departmentRepo = getConnection().getRepository(Department);
+        return departmentRepo.save(departmentDetails);
+    }
+
+    public async softDeleteDepartmentById(id: string) {
+        const departmentRepo = getConnection().getRepository(Department);
+        return departmentRepo.softDelete(
+            id
+        );
+    } 
+    public async updateDepartmentDetails(departmentId: string, departmentDetails: any) {
+        const departmentRepo = getConnection().getRepository(Department);
+        const updateDepartmentDetails = await departmentRepo.update({ id: departmentId, deletedAt: null }, departmentDetails);
+        return updateDepartmentDetails;
+    }
+
+    async getDepartmentId(id: string){
+        const departmentRepo = getConnection().getRepository(Department);
+        return departmentRepo.findOne(id);
     }
     }

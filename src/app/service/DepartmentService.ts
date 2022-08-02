@@ -10,11 +10,22 @@ export class DepartmentService{
         return await this.departmentRepo.getAllDepartments();
         
     }
+    public async softDeleteDepartmentById(id: string) {
+        return await this.departmentRepo.softDeleteDepartmentById(id);
+    }
+
+    public async updateDepartmentDetails(departmentId: string, departmentDetails: any) {
+        return await this.departmentRepo.updateDepartmentDetails(departmentId,departmentDetails);
+    }
+
+    async getDepartmentId(id: string){
+        return await this.departmentRepo.getDepartmentId(id);
+    }
 
     public async createDepartment(departmentDetails: any) {
         try {
             const newDepartment = plainToClass(Department, {
-                dept_name: departmentDetails.name,
+                name: departmentDetails.name,
                 //username: employeeDetails.username,
                 //age: employeeDetails.age,
                 //departmentId: departmentDetails.departmentId,

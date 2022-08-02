@@ -16,6 +16,10 @@ export class Employee extends AbstractEntity {
     public isActive: boolean;
     @Column({ nullable: false })
     public role: string;
+    @Column({nullable: true})
+    public password: string
+    @Column({nullable: true})
+    public username: string
 
     @ManyToOne(() => Department, { cascade: true })
     @JoinColumn()
