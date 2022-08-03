@@ -7,6 +7,7 @@ import {CreateEmployeeDto} from "../dto/CreateEmployeeDto";
 import validationMiddleware from "../middleware/validationMiddleware";
 import { UuidDto } from "../dto/UuidDto";
 import authorize from "../middleware/authorize";
+import { LoginDto } from "../dto/LoginDto";
 
 class EmployeeController extends AbstractController {
   constructor(private employeeService: EmployeeService) {
@@ -21,10 +22,7 @@ class EmployeeController extends AbstractController {
     this.router.delete(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteEmployeeById)
     this.router.put(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(CreateEmployeeDto,APP_CONSTANTS.body), this.updateEmployeeDetails)
     this.router.get(`${this.path}/:id`,authorize(['sde','admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
-    this.router.post(
-      `${this.path}/login`,
-      this.login
-    );
+    this.router.post(`${this.path}/login`,validationMiddleware(LoginDto,APP_CONSTANTS.body), this.login);
   }
   private employeeResponse = async (request: RequestWithUser, response: Response, next: NextFunction) => {
     try {
