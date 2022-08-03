@@ -13,17 +13,24 @@ export class EmployeeRespository{
     }
 
     
-    public async softDeleteEmployeeById(id: string) {
+    public async softDeleteEmployeeById(employee: Employee) {
         const employeeRepo = getConnection().getRepository(Employee);
-        return employeeRepo.softDelete(
-            id
-        );
+        return employeeRepo.softRemove(employee);
     } 
 
-    async getEmployeeId(id: string){
+    async getEmployeeId(id:string){
         const employeeRepo = getConnection().getRepository(Employee);
-        return employeeRepo.findOne(id);
+        return employeeRepo.findOne({
+            where: {
+                id,
+            },
+            relations: ['address'],
+        });
     }
+    // async getEmployeeId(id: string){
+    //     const employeeRepo = getConnection().getRepository(Employee);
+    //     return employeeRepo.findOne(id);
+    // }
 
     // public async updateEmployeeDetails(employeeId: string, employeeDetails: any) {
     //     const employeeRepo = getConnection().getRepository(Employee);
@@ -35,8 +42,9 @@ export class EmployeeRespository{
     // }
 
     public async updateEmployeeDetails(employeeId: string, employeeDetails: any) {
+        //console.log(employeeDetails)
         const employeeRepo = getConnection().getRepository(Employee);
-        const updateEmployeeDetails = await employeeRepo.update({ id: employeeId, deletedAt: null }, employeeDetails);
+        const updateEmployeeDetails = await employeeRepo.save({deletedAt: null},employeeDetails);
         return updateEmployeeDetails;
     }
 

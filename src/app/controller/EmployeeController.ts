@@ -8,6 +8,7 @@ import validationMiddleware from "../middleware/validationMiddleware";
 import { UuidDto } from "../dto/UuidDto";
 import authorize from "../middleware/authorize";
 import { LoginDto } from "../dto/LoginDto";
+import { UpdateEmployeeDto } from "../dto/UpdateEmployeeDto";
 
 class EmployeeController extends AbstractController {
   constructor(private employeeService: EmployeeService) {
@@ -17,10 +18,11 @@ class EmployeeController extends AbstractController {
   protected initializeRoutes() {
     
     this.router.get(`${this.path}`,authorize(['sde','admin']), this.employeeResponse);
-    this.router.post(`${this.path}`,authorize(['admin']),validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
+    this.router.post(`${this.path}`,validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
         // this.asyncRouteHandler(this.createEmployee)
-    this.router.delete(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteEmployeeById)
-    this.router.put(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(CreateEmployeeDto,APP_CONSTANTS.body), this.updateEmployeeDetails)
+    this.router.delete(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), 
+    this.softDeleteEmployeeById)
+    this.router.put(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(UpdateEmployeeDto,APP_CONSTANTS.body,true), this.updateEmployeeDetails)
     this.router.get(`${this.path}/:id`,authorize(['sde','admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
     this.router.post(`${this.path}/login`,validationMiddleware(LoginDto,APP_CONSTANTS.body), this.login);
   }
@@ -67,6 +69,7 @@ class EmployeeController extends AbstractController {
   }
 
   private getEmployeeId = async (request: RequestWithUser,response: Response,next: NextFunction) => {
+    console.log('CONTROLLER TEST')
     try {
       const {id} = request.params;
       const data = await this.employeeService.getEmployeeId(id);
