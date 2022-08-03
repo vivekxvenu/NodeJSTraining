@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsNumber, IsString, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "./CreateAddressDto";
 
 export class CreateEmployeeDto {
@@ -11,9 +11,6 @@ export class CreateEmployeeDto {
 
     @IsString()
     public password: string;
-
-    // @IsNumber()
-    // public age: number;
 
     @IsString()
     public joiningDate: Date;

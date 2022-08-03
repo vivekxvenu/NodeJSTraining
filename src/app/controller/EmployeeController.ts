@@ -17,13 +17,11 @@ class EmployeeController extends AbstractController {
   }
   protected initializeRoutes() {
     
-    this.router.get(`${this.path}`,authorize(['sde','admin']), this.employeeResponse);
-    this.router.post(`${this.path}`,validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
-        // this.asyncRouteHandler(this.createEmployee)
-    this.router.delete(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), 
-    this.softDeleteEmployeeById)
-    this.router.put(`${this.path}/:id`,authorize(['admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(UpdateEmployeeDto,APP_CONSTANTS.body,true), this.updateEmployeeDetails)
-    this.router.get(`${this.path}/:id`,authorize(['sde','admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
+    this.router.get(`${this.path}`,authorize([APP_CONSTANTS.sde,APP_CONSTANTS.admin]), this.employeeResponse);
+    this.router.post(`${this.path}`,authorize([APP_CONSTANTS.admin]), validationMiddleware(CreateEmployeeDto, APP_CONSTANTS.body),this.createEmployee);
+    this.router.delete(`${this.path}/:id`,authorize([APP_CONSTANTS.admin]),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteEmployeeById)
+    this.router.patch(`${this.path}/:id`,authorize([APP_CONSTANTS.admin]),validationMiddleware(UuidDto, APP_CONSTANTS.params),validationMiddleware(UpdateEmployeeDto,APP_CONSTANTS.body,true), this.updateEmployeeDetails)
+    this.router.get(`${this.path}/:id`,authorize([APP_CONSTANTS.sde,APP_CONSTANTS.admin]),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getEmployeeId)
     this.router.post(`${this.path}/login`,validationMiddleware(LoginDto,APP_CONSTANTS.body), this.login);
   }
   private employeeResponse = async (request: RequestWithUser, response: Response, next: NextFunction) => {
@@ -69,7 +67,7 @@ class EmployeeController extends AbstractController {
   }
 
   private getEmployeeId = async (request: RequestWithUser,response: Response,next: NextFunction) => {
-    console.log('CONTROLLER TEST')
+
     try {
       const {id} = request.params;
       const data = await this.employeeService.getEmployeeId(id);
@@ -81,11 +79,7 @@ class EmployeeController extends AbstractController {
     }
   }
 
-  private login = async (
-    request: RequestWithUser,
-    response: Response,
-    next: NextFunction
-  ) => {
+  private login = async (request: RequestWithUser,response: Response,next: NextFunction) => {
     try{
     const loginData = request.body;
     const loginDetail = await this.employeeService.employeeLogin(

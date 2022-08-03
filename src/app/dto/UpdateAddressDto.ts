@@ -1,5 +1,4 @@
-import { Type } from "class-transformer";
-import { IsDate, IsNumber, IsString, IsUUID, ValidateNested } from "class-validator";
+import {IsNumber, IsString, IsUUID} from "class-validator";
 
 export class UpdateAddressDto {
     @IsUUID()
@@ -23,7 +22,5 @@ export class UpdateAddressDto {
     @IsNumber()
     public pincode: number;
 
-    // @IsUUID()
-    // public id: string;
 
 }

@@ -14,11 +14,11 @@ class DepartmentController extends AbstractController {
     this.initializeRoutes();
   }
   protected initializeRoutes() {
-    this.router.get(`${this.path}`,authorize(['sde','admin']), this.departmentResponse);
-    this.router.post(`${this.path}`,authorize(['admin']),validationMiddleware(CreateDepartmentDto, APP_CONSTANTS.body),this.createDepartment);
-    this.router.put(`${this.path}/:id`,authorize(['admin']), validationMiddleware(UuidDto, APP_CONSTANTS.params), validationMiddleware(CreateDepartmentDto, APP_CONSTANTS.body),this.updateDepartmentDetails)
-    this.router.delete(`${this.path}/:id`,authorize(['admin']), validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteDepartmentById)
-    this.router.get(`${this.path}/:id`,authorize(['sde','admin']),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getDepartmentId)
+    this.router.get(`${this.path}`,authorize([APP_CONSTANTS.sde,APP_CONSTANTS.admin]), this.departmentResponse);
+    this.router.post(`${this.path}`,authorize([APP_CONSTANTS.admin]),validationMiddleware(CreateDepartmentDto, APP_CONSTANTS.body),this.createDepartment);
+    this.router.put(`${this.path}/:id`,authorize([APP_CONSTANTS.admin]), validationMiddleware(UuidDto, APP_CONSTANTS.params), validationMiddleware(CreateDepartmentDto, APP_CONSTANTS.body),this.updateDepartmentDetails)
+    this.router.delete(`${this.path}/:id`,authorize([APP_CONSTANTS.admin]), validationMiddleware(UuidDto, APP_CONSTANTS.params), this.softDeleteDepartmentById)
+    this.router.get(`${this.path}/:id`,authorize([APP_CONSTANTS.sde,APP_CONSTANTS.admin]),validationMiddleware(UuidDto, APP_CONSTANTS.params), this.getDepartmentId)
   }
   private departmentResponse = async (request: RequestWithUser, response: Response, next: NextFunction) => {
     try {

@@ -19,11 +19,6 @@ export class EmployeeService {
 
     }
 
-    // public async softDeleteEmployeeById(id: string) {
-    //     const employee = await this.employeeRepo.getEmployeeId(id);
-    //     return await this.employeeRepo.softDeleteEmployeeById(employee);
-    // }
-
     public async softDeleteEmployeeById(id: string){
       
       const employee = await this.getEmployeeId(id)
@@ -99,21 +94,10 @@ export class EmployeeService {
                 address: newAddress,
                 isActive: true,
             });
-
-            
-            // const newEmployee= {
-            //     name: employeeDetails.name,
-            //     username: employeeDetails.username,
-            //     age: employeeDetails.age,
-            //     departmentId: employeeDetails.departmentId,
-            //     isActive: true,
-            // } as Employee;
-            // const newEmployee = employeeDetails as Employee;
             const save = await this.employeeRepo.saveEmployeeDetails(newEmployee);
             return save;
         } catch (err) {
-            throw new HttpException(400, "Failed to create employee", "");
-            throw err;
+            throw new HttpException(400, "Failed to create employee", "")
         }
     }
 

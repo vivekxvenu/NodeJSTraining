@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany } from "typeorm";
 import { AbstractEntity } from "./AbstractEntity";
 import { Employee } from "./Employee";
 

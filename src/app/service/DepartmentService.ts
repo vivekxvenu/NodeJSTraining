@@ -26,7 +26,7 @@ export class DepartmentService{
             throw new EntityNotFoundException(ErrorCodes.USER_WITH_ID_NOT_FOUND)
         }
         return department
-        //return await this.departmentRepo.getDepartmentId(id);
+        
     }
 
     public async createDepartment(departmentDetails: any) {
